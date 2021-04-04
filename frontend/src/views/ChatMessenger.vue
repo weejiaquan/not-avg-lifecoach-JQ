@@ -1,12 +1,12 @@
 <template>
   <div id="chat-bot">
     <p>Language</p>
-    <select name="show" v-model="languageSel" >
-             <option :value="'en'">English</option>
-             <option :value="'es'">Espanol</option>
-             <option :value="'ja'">Japanese</option>
-             <option :value="'zh'">Chinese</option>
-         </select>  
+    <select name="show" v-model="languageSel">
+      <option :value="'en'">English</option>
+      <option :value="'es'">Espanol</option>
+      <option :value="'ja'">Japanese</option>
+      <option :value="'zh'">Chinese</option>
+    </select>
     <div id="chat-header">
       <h5 id="chat-header-text">Not Your Average Life Coach</h5>
       <button
@@ -48,6 +48,8 @@ import VueChatScroll from "vue-chat-scroll";
 import Bot from "@/components/Bot.vue";
 import User from "../components/User.vue";
 import translate from "translate";
+import wikipedia from "wikipedia";
+
 Vue.use(VueChatScroll);
 
 translate.engine = "libre";
@@ -88,6 +90,35 @@ export default {
     msg: String
   },
   methods: {
+
+  search(message) {
+    if(this.languageSel!="en"){
+    wikipedia.page(message).then(data => { data.summary().then(
+      data => translate(data.extract, this.languageSel).then(data =>{
+            this.conversation.push({
+            chatStyle: "bot",
+            text: data
+          });
+         })
+
+      )}).then(this.userMessage = "")
+      .catch(error => {
+            console.log(error);
+          });
+    }else{
+     wikipedia.page(message).then(data => { data.summary().then(
+      data =>
+            this.conversation.push({
+            chatStyle: "bot",
+            text: data.extract
+         })
+      )}).then(this.userMessage = "")
+      .catch(error => {
+            console.log(error);
+          });
+    }
+    },
+
     goToChatAnalysisRoute() {
       this.$store.commit("setAllConvoData", this.allConvoData);
       this.$store.commit("setConversation", this.conversation);
@@ -116,6 +147,10 @@ export default {
           text: this.userMessage
         });
 
+        if(this.userMessage.includes("wiki")){
+          var ret = this.userMessage.replace('wiki ','');
+          this.search(ret);
+        }else{
         postMessage(this.userMessage, this.nlpRestToken)
           .then(() => {
             this.typingEnabled = false;
@@ -133,6 +168,7 @@ export default {
           .finally(() => {
             this.userMessage = "";
           });
+      }
       }
     },
     getReply() {
@@ -154,7 +190,7 @@ export default {
             text: this.reply.text
           });
           }
-          
+
         })
         .catch(error => {
           console.log(error);
@@ -346,5 +382,4 @@ input:focus,
 button:focus {
   outline: none;
 }
-
 </style>
