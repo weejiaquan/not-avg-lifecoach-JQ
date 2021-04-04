@@ -48,6 +48,8 @@ import VueChatScroll from "vue-chat-scroll";
 import Bot from "@/components/Bot.vue";
 import User from "../components/User.vue";
 import translate from "translate";
+import wikipedia from "wikipedia";
+
 Vue.use(VueChatScroll);
 
 translate.engine = "libre";
@@ -88,6 +90,17 @@ export default {
     msg: String
   },
   methods: {
+
+  search(message) {
+    wikipedia.page(message).then(data => { data.summary().then(
+      data => 
+       this.conversation.push({
+            chatStyle: "bot",
+            text: data.extract
+            })
+      )});
+    },
+
     goToChatAnalysisRoute() {
       this.$store.commit("setAllConvoData", this.allConvoData);
       this.$store.commit("setConversation", this.conversation);
@@ -115,7 +128,18 @@ export default {
           chatStyle: "user",
           text: this.userMessage
         });
+        
+        if(this.userMessage.includes("wiki")){
+          var ret = this.userMessage.replace('wiki ','');
+          console.log(ret);
+          this.search(ret);
+          // this.conversation.push({
+          //   chatStyle: "bot",
+          //   text: this.search(ret)
+          //   });
+        }else{
 
+        
         postMessage(this.userMessage, this.nlpRestToken)
           .then(() => {
             this.typingEnabled = false;
@@ -133,6 +157,7 @@ export default {
           .finally(() => {
             this.userMessage = "";
           });
+      }
       }
     },
     getReply() {
