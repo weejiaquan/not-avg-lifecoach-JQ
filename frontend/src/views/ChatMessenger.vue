@@ -1,12 +1,12 @@
 <template>
   <div id="chat-bot">
     <p>Language</p>
-    <select name="show" v-model="languageSel" >
-             <option :value="'en'">English</option>
-             <option :value="'es'">Espanol</option>
-             <option :value="'ja'">Japanese</option>
-             <option :value="'zh'">Chinese</option>
-         </select>  
+    <select name="show" v-model="languageSel">
+      <option :value="'en'">English</option>
+      <option :value="'es'">Espanol</option>
+      <option :value="'ja'">Japanese</option>
+      <option :value="'zh'">Chinese</option>
+    </select>
     <div id="chat-header">
       <h5 id="chat-header-text">Not Your Average Life Coach</h5>
       <button
@@ -92,13 +92,31 @@ export default {
   methods: {
 
   search(message) {
+    if(this.languageSel!="en"){
     wikipedia.page(message).then(data => { data.summary().then(
-      data => 
-       this.conversation.push({
+      data => translate(data.extract, this.languageSel).then(data =>{
+            this.conversation.push({
+            chatStyle: "bot",
+            text: data
+          });
+         })
+
+      )}).then(this.userMessage = "")
+      .catch(error => {
+            console.log(error);
+          });
+    }else{
+     wikipedia.page(message).then(data => { data.summary().then(
+      data =>
+            this.conversation.push({
             chatStyle: "bot",
             text: data.extract
-            })
-      )}).then(this.userMessage = "");
+         })
+      )}).then(this.userMessage = "")
+      .catch(error => {
+            console.log(error);
+          });
+    }
     },
 
     goToChatAnalysisRoute() {
@@ -128,18 +146,11 @@ export default {
           chatStyle: "user",
           text: this.userMessage
         });
-        
+
         if(this.userMessage.includes("wiki")){
           var ret = this.userMessage.replace('wiki ','');
-          console.log(ret);
           this.search(ret);
-          // this.conversation.push({
-          //   chatStyle: "bot",
-          //   text: this.search(ret)
-          //   });
         }else{
-
-        
         postMessage(this.userMessage, this.nlpRestToken)
           .then(() => {
             this.typingEnabled = false;
@@ -179,7 +190,7 @@ export default {
             text: this.reply.text
           });
           }
-          
+
         })
         .catch(error => {
           console.log(error);
@@ -371,5 +382,4 @@ input:focus,
 button:focus {
   outline: none;
 }
-
 </style>
