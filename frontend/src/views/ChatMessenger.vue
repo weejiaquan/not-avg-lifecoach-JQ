@@ -98,7 +98,7 @@ export default {
             chatStyle: "bot",
             text: data.extract
             })
-      )});
+      )}).then(this.userMessage = "");
     },
 
     goToChatAnalysisRoute() {
