@@ -1,5 +1,12 @@
 <template>
   <div id="chat-bot">
+    <p>Language</p>
+    <select name="show" v-model="languageSel" >
+             <option :value="'en'">English</option>
+             <option :value="'es'">Espanol</option>
+             <option :value="'ja'">Japanese</option>
+             <option :value="'zh'">Chinese</option>
+         </select>  
     <div id="chat-header">
       <h5 id="chat-header-text">Not Your Average Life Coach</h5>
       <button
@@ -40,7 +47,13 @@ import { makeHandshake, postMessage, getBotReply } from "@/services/axios.js";
 import VueChatScroll from "vue-chat-scroll";
 import Bot from "@/components/Bot.vue";
 import User from "../components/User.vue";
+import translate from "translate";
 Vue.use(VueChatScroll);
+
+translate.engine = "libre";
+
+
+
 
 export default {
   components: {
@@ -65,7 +78,8 @@ export default {
       botMessageCount: -1,
       conversation: [],
       typingEnabled: true,
-      error: ""
+      error: "",
+      languageSel: "en"
     };
   },
 
@@ -127,10 +141,20 @@ export default {
           this.reply = response.data.activities[(this.botMessageCount += 2)];
           this.allConvoData = response.data;
           this.botMessages.push(this.reply.text);
-          this.conversation.push({
+          if(this.languageSel!="en"){
+            translate(this.reply.text, this.languageSel).then(data =>{
+            this.conversation.push({
+            chatStyle: "bot",
+            text: data
+          });
+         })
+          }else{
+            this.conversation.push({
             chatStyle: "bot",
             text: this.reply.text
           });
+          }
+          
         })
         .catch(error => {
           console.log(error);
@@ -322,4 +346,5 @@ input:focus,
 button:focus {
   outline: none;
 }
+
 </style>
