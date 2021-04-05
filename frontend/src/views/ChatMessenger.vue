@@ -54,13 +54,10 @@ Vue.use(VueChatScroll);
 
 translate.engine = "libre";
 
-
-
-
 export default {
   components: {
     Bot,
-    User
+    User,
   },
   created() {
     this.nlpHandshake();
@@ -81,50 +78,57 @@ export default {
       conversation: [],
       typingEnabled: true,
       error: "",
-      languageSel: "en"
+      languageSel: "en",
     };
   },
 
   name: "ChatBot",
   props: {
-    msg: String
+    msg: String,
   },
   methods: {
-
-  search(message) {
-    if(this.languageSel!="en"){
-    wikipedia.page(message).then(data => { data.summary().then(
-      data => translate(data.extract, this.languageSel).then(data =>{
-            this.conversation.push({
-            chatStyle: "bot",
-            text: data
-          });
-         })
-
-      )}).then(this.userMessage = "")
-      .catch(error => {
-        this.conversation.push({
-            chatStyle: "bot",
-            text: "No such article at Wikipedia"
-          });
-            console.log(error);
-          });
-    }else{
-     wikipedia.page(message).then(data => { data.summary().then(
-      data =>
-            this.conversation.push({
-            chatStyle: "bot",
-            text: data.extract
-         })
-      )}).then(this.userMessage = "")
-      .catch(error => {
+    search(message) {
+      if (this.languageSel != "en") {
+        wikipedia
+          .page(message)
+          .then((data) => {
+            data.summary().then((data) =>
+              translate(data.extract, this.languageSel).then((data) => {
                 this.conversation.push({
-            chatStyle: "bot",
-            text: "No such article at Wikipedia"
-          });
+                  chatStyle: "bot",
+                  text: data,
+                });
+              })
+            );
+          })
+          .then((this.userMessage = ""))
+          .catch((error) => {
+            this.conversation.push({
+              chatStyle: "bot",
+              text: "No such article at Wikipedia",
+            });
             console.log(error);
           });
-    }
+      } else {
+        wikipedia
+          .page(message)
+          .then((data) => {
+            data.summary().then((data) =>
+              this.conversation.push({
+                chatStyle: "bot",
+                text: data.extract,
+              })
+            );
+          })
+          .then((this.userMessage = ""))
+          .catch((error) => {
+            this.conversation.push({
+              chatStyle: "bot",
+              text: "No such article at Wikipedia",
+            });
+            console.log(error);
+          });
+      }
     },
 
     goToChatAnalysisRoute() {
@@ -135,15 +139,15 @@ export default {
     initialMessage() {
       this.conversation.push({
         chatStyle: "bot",
-        text: "Hello, I am your Motivational Lifecoach, ask me anything!"
+        text: "Hello, I am your Motivational Lifecoach, ask me anything!",
       });
     },
     nlpHandshake() {
       makeHandshake()
-        .then(dataId => {
+        .then((dataId) => {
           this.nlpRestToken = dataId;
         })
-        .catch(error => {
+        .catch((error) => {
           this.error = "handshake api call is unsuccessful";
         });
     },
@@ -152,63 +156,62 @@ export default {
         this.userMessages.push(this.userMessage);
         this.conversation.push({
           chatStyle: "user",
-          text: this.userMessage
+          text: this.userMessage,
         });
 
-        if(this.userMessage.includes("wiki")){
-          var messageParse = this.userMessage.replace('wiki ','');
+        if (this.userMessage.includes("wiki")) {
+          var messageParse = this.userMessage.replace("wiki ", "");
           this.search(messageParse);
-        }else{
-        postMessage(this.userMessage, this.nlpRestToken)
-          .then(() => {
-            this.typingEnabled = false;
-            setTimeout(() => {
-              this.typingEnabled = true;
-              this.$nextTick(() => {
-                this.$refs["textinput"].focus();
-              });
-              this.getReply();
-            }, Math.random() * 1500 + 500);
-          })
-          .catch(error => {
-            console.log(error);
-          })
-          .finally(() => {
-            this.userMessage = "";
-          });
-      }
+        } else {
+          postMessage(this.userMessage, this.nlpRestToken)
+            .then(() => {
+              this.typingEnabled = false;
+              setTimeout(() => {
+                this.typingEnabled = true;
+                this.$nextTick(() => {
+                  this.$refs["textinput"].focus();
+                });
+                this.getReply();
+              }, Math.random() * 1500 + 500);
+            })
+            .catch((error) => {
+              console.log(error);
+            })
+            .finally(() => {
+              this.userMessage = "";
+            });
+        }
       }
     },
     getReply() {
       getBotReply(this.nlpRestToken)
-        .then(response => {
+        .then((response) => {
           this.reply = response.data.activities[(this.botMessageCount += 2)];
           this.allConvoData = response.data;
           this.botMessages.push(this.reply.text);
-          if(this.languageSel!="en"){
-            translate(this.reply.text, this.languageSel).then(data =>{
+          if (this.languageSel != "en") {
+            translate(this.reply.text, this.languageSel).then((data) => {
+              this.conversation.push({
+                chatStyle: "bot",
+                text: data,
+              });
+            });
+          } else {
             this.conversation.push({
-            chatStyle: "bot",
-            text: data
-          });
-         })
-          }else{
-            this.conversation.push({
-            chatStyle: "bot",
-            text: this.reply.text
-          });
+              chatStyle: "bot",
+              text: this.reply.text,
+            });
           }
-
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         })
         .finally(() => {});
     },
     updateMessage(currentMessage) {
       this.userMessage = currentMessage;
-    }
-  }
+    },
+  },
 };
 </script>
 
