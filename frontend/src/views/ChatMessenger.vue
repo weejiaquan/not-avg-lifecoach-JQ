@@ -103,6 +103,10 @@ export default {
 
       )}).then(this.userMessage = "")
       .catch(error => {
+        this.conversation.push({
+            chatStyle: "bot",
+            text: "No such article at Wikipedia"
+          });
             console.log(error);
           });
     }else{
@@ -114,6 +118,10 @@ export default {
          })
       )}).then(this.userMessage = "")
       .catch(error => {
+                this.conversation.push({
+            chatStyle: "bot",
+            text: "No such article at Wikipedia"
+          });
             console.log(error);
           });
     }
@@ -148,8 +156,8 @@ export default {
         });
 
         if(this.userMessage.includes("wiki")){
-          var ret = this.userMessage.replace('wiki ','');
-          this.search(ret);
+          var messageParse = this.userMessage.replace('wiki ','');
+          this.search(messageParse);
         }else{
         postMessage(this.userMessage, this.nlpRestToken)
           .then(() => {
