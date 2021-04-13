@@ -250,3 +250,44 @@ The sentiment analysis is the first page that pops up when you click the analyze
 - Created Level 0/ Level 1 DFDs
 - Created Videos
 
+## Individual Component
+**Note 1:** Before you begin, please refer to [this section](#getting-started) to properly configure the chatbot to your local machine.<br>
+**Note 2:** Please use Google Chrome Web Browser
+
+### Additional Links
+1. [Individual Documentation](./Documentation/individual_img/translation_sample.png)
+2. [YouTube Video Presentation](https://youtu.be/wTVxMy5FgQQ)
+
+
+The following chatbot has two new features implemented. These features are the Google translate API and the Wikipedia API.
+
+### 1. Translate 
+The API used can be found from the following website: https://www.npmjs.com/package/translate <br>
+
+The chatbot is capable of speaking multiple languages. All you have to do is to select the language on the drop down menu on top of the chatbot and the bot will translate whatever their reply is with the specific language selected.
+
+Below is a sample output with Japanese selected.
+<div align="center">
+  <img height="500" src="./Documentation/individual_docs/docs.pdf">
+</div>
+
+### 2. Wikipedia Search
+The API used can be found from the following website: https://www.npmjs.com/package/wikipedia <br>
+**Note:** This API does not work in Firefox. For this reason, Google Chrome is recommended. 
+
+The chatbot has a new feature integrated with the chat that allows the user to ask the chatbot to search a Wikipedia page. The chatbot will then output the summary of your selected topic. 
+
+To use this new feature, follow these steps: 
+  1. Type `wiki ` followed by the topic you are interested in `ex. wiki test`
+  2. Hit `enter` or the `send` icon and see the output! <br>
+**Note:** If you select another language, the bot will respond in that language. 
+
+Below is a sample output with an English summary.
+<div align="center">
+  <img height="500" src="./Documentation/individual_img/wiki_test_eng">
+</div>
+
+And here is a sample output with a Japanese summary.
+<div align="center">
+  <img height="500" src="./Documentation/individual_img/wiki_test_jpn">
+</div>
