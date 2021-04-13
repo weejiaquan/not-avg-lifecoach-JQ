@@ -255,7 +255,7 @@ The sentiment analysis is the first page that pops up when you click the analyze
 **Note 2:** Please use Google Chrome Web Browser
 
 ### Additional Links
-1. [Individual Documentation](./Documentation/individual_img/translation_sample.png)
+1. [Individual Documentation](./Documentation/individual_docs/docs.pdf)
 2. [YouTube Video Presentation](https://youtu.be/wTVxMy5FgQQ)
 
 
@@ -268,7 +268,7 @@ The chatbot is capable of speaking multiple languages. All you have to do is to 
 
 Below is a sample output with Japanese selected.
 <div align="center">
-  <img height="500" src="./Documentation/individual_docs/docs.pdf">
+  <img height="500" src="./Documentation/individual_img/translation_sample.png">
 </div>
 
 ### 2. Wikipedia Search
@@ -284,10 +284,10 @@ To use this new feature, follow these steps:
 
 Below is a sample output with an English summary.
 <div align="center">
-  <img height="500" src="./Documentation/individual_img/wiki_test_eng">
+  <img height="500" src="./Documentation/individual_img/wiki_test_eng.png">
 </div>
 
 And here is a sample output with a Japanese summary.
 <div align="center">
-  <img height="500" src="./Documentation/individual_img/wiki_test_jpn">
+  <img height="500" src="./Documentation/individual_img/wiki_test_jpn.png">
 </div>
